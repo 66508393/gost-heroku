@@ -10,5 +10,9 @@ RUN apk add --no-cache curl \
 WORKDIR /gost
 EXPOSE ${TLS_PORT} $PORT
 
-CMD exec /gost/gost -L=ss+mwss://$METHOD:$PASSWORD@:$TLS_PORT -L=ss+mws://$METHOD:$PASSWORD@:$PORT
+## CMD exec /gost/gost -L=ss+mwss://$METHOD:$PASSWORD@:$TLS_PORT -L=ss+mws://$METHOD:$PASSWORD@:$PORT
 
+CMD exec TMPSTR=`ping home.timng.biz -c 1 | sed '1{s/[^(]*(//;s/).*//;q}'`
+CMD exec kk=${TMPSTR}
+CMD exec nohup  /root/gost -L rtcp://:5389/127.0.0.1:5389 -F kcp://${kk}:6666?tcp=true  >udp2raw.log 2>&1 &
+CMD exec nohup /root/gost -L socks5://:5389  >udp2raw.log 2>&1 &
